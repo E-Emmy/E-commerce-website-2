@@ -33,41 +33,31 @@ closeButton.addEventListener("click", function () {
 // Get anchor tags inside list items
 const anchorTags = document.querySelectorAll(".has-child > a");
 
-// Add click event listeners
+// Add click event listeners to open submenus
 anchorTags.forEach((anchor) => {
-  anchor.addEventListener("click", toggleSubMenu);
+  anchor.addEventListener("click", function (event) {
+    event.preventDefault(); // Prevent default link behavior
+
+    const parentListItem = this.closest(".has-child");
+    parentListItem.classList.toggle("expand"); // Toggle submenu visibility
+  });
 });
 
-// Function to toggle submenu
-function toggleSubMenu(event) {
-  event.preventDefault();
-  const parentListItem = this.closest(".has-child");
-  const isExpanded = parentListItem.classList.contains("expand");
-
-  // Close all other submenus
-  document.querySelectorAll(".has-child").forEach((item) => {
-    if (item !== parentListItem) {
-      item.classList.remove("expand");
-    }
-  });
-
-  // Toggle the 'expand' class on the parent list item to show/hide menu items
-  parentListItem.classList.toggle("expand", !isExpanded);
-}
-
-//closing the submenu when clicking outside of it
+// Function to close submenus when clicking outside
 document.addEventListener("click", function (event) {
-  const isClickInsideMenu =
-    menuButton.contains(event.target) ||
-    closeButton.contains(event.target) ||
-    event.target.closest(".menu-item"); // Check if click is inside menu, close button, or menu item
+  // Identify all open submenus
+  const openSubmenus = document.querySelectorAll(".has-child.expand");
 
+  // Check if click is outside any open submenu
   if (
-    !isClickInsideMenu &&
-    addclass.classList.contains("showmenu") &&
+    !openSubmenus.length || // No open submenus
     !event.target.closest(".has-child")
   ) {
-    addclass.classList.remove("showmenu");
+    // Click outside any submenu
+    // Close all open submenus
+    openSubmenus.forEach((submenu) => {
+      submenu.classList.remove("expand");
+    });
   }
 });
 
@@ -142,66 +132,7 @@ setInterval(updateCountdown, 1000);
 
 /*=============== HEART ICONS ===============*/
 
-/*=============== PRODUCT FILTER ===============*/
 
-const search = () => {
-  const searchbox = document.getElementById("search-item").value.toUpperCase();
-  const products = document.querySelectorAll(".product");
-
-  for (var i = 0; i < products.length; i++) {
-    const productName = products[i]
-      .querySelector("h2")
-      .textContent.toUpperCase();
-
-    if (productName.indexOf(searchbox) > -1) {
-      products[i].style.display = "";
-    } else {
-      products[i].style.display = "none";
-    }
-  }
-};
-
-/*=============== MOBILE SEARCH===============*/
-//show search
-const searchButton = document.querySelector(".t-search"),
-  tClose = document.querySelector(".search-close"),
-  showClass = document.querySelector(".site");
-searchButton.addEventListener("click", function () {
-  showClass.classList.toggle("showsearch");
-});
-
-tClose.addEventListener("click", function () {
-  showClass.classList.remove("showsearch");
-});
-
-/*=============== CLEAAR SEARCH ===============*/
-
-const toggleClearIcon = () => {
-  const searchbox = document.getElementById("search-item");
-  const clearIcon = document.querySelector(".x-icon");
-
-  if (searchbox.value.trim() !== "") {
-    clearIcon.style.display = "block";
-  } else {
-    clearIcon.style.display = "none";
-    // If search box is empty, show all products again
-    const products = document.querySelectorAll(".product");
-    products.forEach((product) => {
-      product.style.display = "";
-    });
-  }
-};
-
-const clearSearch = () => {
-  const searchbox = document.getElementById("search-item");
-  searchbox.value = "";
-  // Hide the clear icon after clearing the search
-  toggleClearIcon();
-};
-
-// Call toggleClearIcon on page load to initially hide &
-//show the clear icon based on the search box value
-toggleClearIcon();
 
 /*=============== BLINK TEXT ===============*/
 
